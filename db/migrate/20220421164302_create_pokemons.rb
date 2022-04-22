@@ -5,6 +5,7 @@ class CreatePokemons < ActiveRecord::Migration[7.0]
       t.string :type_one
       t.string :type_two
       t.string :image
+      t.string :official_image
       t.integer :hp
       t.integer :attack
       t.integer :defense
