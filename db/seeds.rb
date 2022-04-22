@@ -13,6 +13,7 @@ pokemonFilteredDataList = pokemonMasterList.map do |pokemon|
         type_one: pokemon['types'][0]['type']['name'],
         type_two: pokemon['types'][1] ? pokemon['types'][1]['type']['name'] : nil,
         image: pokemon['sprites']['front_default'],
+        official_image: pokemon['sprites']['other']['official-artwork']['front_default'],
         hp: pokemon['stats'][0]['base_stat'],
         attack: pokemon['stats'][1]['base_stat'],
         defense: pokemon['stats'][2]['base_stat'],
