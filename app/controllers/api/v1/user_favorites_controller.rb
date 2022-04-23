@@ -22,6 +22,6 @@ class Api::V1::UserFavoritesController < ApplicationController
     private
 
     def favorite_params
-        params.require(:favorite).permit(:pokemon_id)
+        params.require(:newFav).permit(:pokemon_id)
     end
 end
