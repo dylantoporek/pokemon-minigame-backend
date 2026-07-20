@@ -11,6 +11,7 @@ Originally a Rails 7 + Heroku app, the backend is now a **Node/Express API that 
 - `server/db.js` — Postgres connection pool (`DATABASE_URL`)
 - `db/schema.sql` — schema (port of the old Rails `schema.rb`)
 - `scripts/seed.js` — creates tables and seeds the pokedex from PokeAPI; safe to re-run
+- `client/` — the React frontend source (Vite); `cd client && npm install && npm run build` rebuilds `public/`
 - `public/` — production build of the React frontend, served statically with SPA fallback
 
 The old Rails app (`app/`, `config/`, `Gemfile`, …) is kept in the repo for reference but is no longer used; it can be deleted whenever you like.
