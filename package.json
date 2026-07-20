@@ -1,0 +1,20 @@
+{
+  "name": "pokemon-minigame-backend",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Pokemon minigame API (Node/Express port of the original Rails backend) deployable to Vercel",
+  "main": "server/app.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "node server/local.js",
+    "seed": "node scripts/seed.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  }
+}
