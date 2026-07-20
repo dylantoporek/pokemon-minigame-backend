@@ -25,12 +25,11 @@
 !/tmp/storage/
 !/tmp/storage/.keep
 
-/public/assets
-
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
 # Node
 /node_modules
+/client/node_modules
 .env
 .vercel
