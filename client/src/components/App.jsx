@@ -57,14 +57,8 @@ function AppRoutes() {
         <NavBar user={user} setUser={setUser} setFavorites={setFavorites} />
         <main className="page">
           <Routes>
-            <Route
-              path="/track"
-              element={<Race user={user} dataArr={dataArr} favorites={favorites} />}
-            />
-            <Route
-              path="/arena"
-              element={<Battle user={user} dataArr={dataArr} favorites={favorites} />}
-            />
+            <Route path="/track" element={<Race dataArr={dataArr} />} />
+            <Route path="/arena" element={<Battle dataArr={dataArr} />} />
             <Route
               path="/favorites"
               element={<FavList user={user} favorites={favorites} onDeleteItem={handleDeleteItem} />}

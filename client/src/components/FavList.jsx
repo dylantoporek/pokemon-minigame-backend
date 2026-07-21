@@ -9,10 +9,7 @@ function FavList({ favorites, onDeleteItem, user }) {
     <div className="fav-page">
       <section className="game-header">
         <h1 className="game-title">Favorites</h1>
-        <p className="game-subtitle">
-          Your team of favorites — usable in the Race Track and Arena with the Random Favorite
-          button.
-        </p>
+        <p className="game-subtitle">Your team of favorites, saved from the Pokédex.</p>
       </section>
 
       {user === "guest" ? (
