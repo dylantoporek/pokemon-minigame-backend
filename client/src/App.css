@@ -746,6 +746,7 @@ img {
 }
 
 .lane-strip {
+  --runner-w: 76px;
   position: relative;
   height: 84px;
   margin-right: 14px;
@@ -756,13 +757,19 @@ img {
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 76px;
-  height: 76px;
+  width: var(--runner-w);
+  height: var(--runner-w);
+  z-index: 2;
+}
+
+.runner-anim {
+  width: 100%;
+  height: 100%;
 }
 
 #poke-track-display {
-  width: 76px;
-  height: 76px;
+  width: var(--runner-w);
+  height: var(--runner-w);
   image-rendering: pixelated;
   transform: scaleX(-1); /* sprites face left by default; racers run right */
   filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.3));
@@ -777,6 +784,47 @@ img {
   50% { transform: scaleX(-1) translateY(-7px); }
 }
 
+.lane-runner.jumping .runner-anim {
+  animation: jump-arc 0.65s cubic-bezier(0.3, 0, 0.4, 1);
+}
+
+@keyframes jump-arc {
+  0%, 100% { transform: translateY(0); }
+  45% { transform: translateY(-46px); }
+  70% { transform: translateY(-34px); }
+}
+
+.lane-runner.stumbling .runner-anim {
+  animation: stumble-wobble 0.8s ease;
+}
+
+@keyframes stumble-wobble {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-38deg) translateY(8px); }
+  45% { transform: rotate(24deg) translateY(4px); }
+  70% { transform: rotate(-12deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.hurdle {
+  position: absolute;
+  bottom: 6px;
+  width: 12px;
+  height: 38px;
+  z-index: 1;
+  background: repeating-linear-gradient(180deg, #fff 0 7px, var(--red) 7px 14px);
+  border: 2px solid var(--navy);
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.hurdle.hit {
+  transform: rotate(72deg);
+  opacity: 0.6;
+}
+
 .finish-line {
   position: absolute;
   right: 0;
@@ -788,9 +836,44 @@ img {
   border-left: 2px solid var(--navy);
 }
 
-@keyframes sprint {
-  from { left: 0; }
-  to { left: calc(100% - 88px); }
+.lane-place {
+  margin-left: 8px;
+  background: var(--yellow);
+  color: var(--navy);
+  font-weight: 900;
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 999px;
+}
+
+.btn-jump {
+  background: var(--yellow);
+  border-color: var(--yellow-dark);
+  color: var(--navy);
+  box-shadow: 0 3px 0 var(--yellow-dark);
+  font-size: 15px;
+}
+
+.btn-jump:hover:not(:disabled) {
+  background: #ffd634;
+  box-shadow: 0 3px 0 var(--yellow-dark), var(--shadow-sm);
+}
+
+.btn-jump:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--yellow-dark);
+}
+
+.btn-jump kbd {
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--yellow-dark);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 1px 7px;
+  margin-left: 6px;
 }
 
 /* ---------------- battle arena ---------------- */
@@ -1317,17 +1400,12 @@ img {
   }
 
   .lane-strip {
+    --runner-w: 56px;
     height: 64px;
   }
 
-  .lane-runner,
-  #poke-track-display {
-    width: 56px;
-    height: 56px;
-  }
-
-  @keyframes sprint {
-    from { left: 0; }
-    to { left: calc(100% - 66px); }
+  .hurdle {
+    height: 30px;
+    bottom: 4px;
   }
 }
