@@ -655,47 +655,17 @@ img {
   max-width: 560px;
 }
 
-.picker-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-  background: var(--card);
-  border: 2px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  padding: 18px 20px;
-  margin-bottom: 18px;
-}
-
-.picker-search {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  max-width: 440px;
-}
-
-.picker-search input {
-  flex: 1;
-  padding: 11px 18px;
-  font-size: 15px;
-  font-weight: 600;
-  border: 2px solid var(--line);
-  border-radius: 999px;
-  outline: none;
-  transition: border-color 0.12s ease, box-shadow 0.12s ease;
-}
-
-.picker-search input:focus {
-  border-color: var(--red);
-  box-shadow: 0 0 0 4px rgba(217, 52, 43, 0.15);
-}
-
-.picker-buttons {
+.game-controls {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.game-controls .btn {
+  padding: 12px 26px;
+  font-size: 15px;
 }
 
 .picked-banner {
@@ -798,6 +768,15 @@ img {
   filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.3));
 }
 
+.lane-runner.running #poke-track-display {
+  animation: gallop 0.32s ease-in-out infinite;
+}
+
+@keyframes gallop {
+  0%, 100% { transform: scaleX(-1) translateY(0); }
+  50% { transform: scaleX(-1) translateY(-7px); }
+}
+
 .finish-line {
   position: absolute;
   right: 0;
@@ -857,6 +836,27 @@ img {
   line-height: 1;
 }
 
+.team-balls {
+  display: flex;
+  gap: 5px;
+  padding-top: 4px;
+}
+
+.team-ball {
+  display: flex;
+  transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+.team-ball.fainted {
+  filter: grayscale(1);
+  opacity: 0.35;
+}
+
+.team-ball.active {
+  transform: scale(1.25);
+  filter: drop-shadow(0 0 4px rgba(255, 203, 5, 0.9));
+}
+
 .score-divider {
   font-size: 18px;
   font-weight: 900;
@@ -912,9 +912,67 @@ img {
   filter: drop-shadow(0 6px 5px rgba(0, 0, 0, 0.25));
 }
 
-.fighter-player #poke-battle-display,
-.fighter-player .fighter-slot {
+.fighter-player #poke-battle-display {
   transform: scaleX(-1);
+}
+
+/* Sprite animation states — applied to a wrapper so they compose with the
+   player-side mirror flip on the image itself. */
+
+.sprite-box {
+  position: relative;
+  z-index: 1;
+}
+
+.sprite-idle {
+  animation: idle-bob 1.6s ease-in-out infinite;
+}
+
+@keyframes idle-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.sprite-enter-player,
+.sprite-enter-cpu {
+  animation: send-out 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes send-out {
+  0% { transform: scale(0.1) translateY(30px); opacity: 0; }
+  70% { transform: scale(1.12) translateY(-6px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.sprite-attack-player {
+  animation: lunge-right 0.6s ease-in-out;
+}
+
+@keyframes lunge-right {
+  0%, 100% { transform: translateX(0); }
+  35% { transform: translateX(-14px); }
+  60% { transform: translateX(46px) translateY(-8px); }
+}
+
+.sprite-attack-cpu {
+  animation: lunge-left 0.6s ease-in-out;
+}
+
+@keyframes lunge-left {
+  0%, 100% { transform: translateX(0); }
+  35% { transform: translateX(14px); }
+  60% { transform: translateX(-46px) translateY(-8px); }
+}
+
+.sprite-faint-player,
+.sprite-faint-cpu {
+  animation: faint-drop 0.8s ease-in forwards;
+}
+
+@keyframes faint-drop {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  30% { transform: translateY(4px) rotate(8deg); }
+  100% { transform: translateY(46px) rotate(24deg); opacity: 0; }
 }
 
 .fighter-shadow {

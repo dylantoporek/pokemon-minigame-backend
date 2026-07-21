@@ -1,10 +1,10 @@
-import React, { useRef, useState } from "react";
-import PickerControls from "./PickerControls";
+import React, { useEffect, useRef, useState } from "react";
 import TypeBadge from "./TypeBadge";
 import { formatName } from "../lib/types";
 import { useToast } from "./Toast";
 
 const RACE_DURATION_MS = 7000;
+const LANES = 5;
 
 function Lane({ label, poke, ani, isPlayer }) {
   return (
@@ -23,7 +23,7 @@ function Lane({ label, poke, ani, isPlayer }) {
       <div className="lane-strip">
         {poke?.name && (
           <div
-            className="lane-runner"
+            className={`lane-runner${ani ? " running" : ""}`}
             style={{ animation: ani ? `sprint ${500 / poke.speed}s forwards` : "" }}
           >
             <img id="poke-track-display" src={poke.image} alt={poke.name} />
@@ -35,36 +35,36 @@ function Lane({ label, poke, ani, isPlayer }) {
   );
 }
 
-function Race({ dataArr, favorites, user }) {
+function Race({ dataArr }) {
   const [ani, setAni] = useState(false);
-  const [playerPoke, setPlayerPoke] = useState([]);
-  const [cpus, setCpus] = useState([{}, {}, {}, {}]);
+  const [racers, setRacers] = useState([]); // index 0 is the player's racer
   const notify = useToast();
   const timerRef = useRef(null);
 
+  useEffect(() => () => clearTimeout(timerRef.current), []);
+
   const randomPoke = () => dataArr[Math.floor(Math.random() * dataArr.length)];
 
-  function generateOpponents() {
-    setCpus([randomPoke(), randomPoke(), randomPoke(), randomPoke()]);
+  function generateRacers() {
+    if (ani) return;
+    setRacers(Array.from({ length: LANES }, randomPoke));
   }
 
   function startRace() {
     if (ani) return;
-    if (!playerPoke[0] || !cpus[0].name) {
-      return notify("There must be 5 Pokémon to race — pick yours and generate opponents.", "warn");
+    if (racers.length === 0) {
+      return notify("Draw a lineup first — one click on New Lineup fills every lane.", "warn");
     }
 
-    const playerSpeed = playerPoke[0].speed;
-    const racerSpeeds = [playerSpeed, ...cpus.map((cpu) => cpu.speed)];
+    const playerSpeed = racers[0].speed;
+    const topSpeed = Math.max(...racers.map((poke) => poke.speed));
     setAni(true);
     timerRef.current = setTimeout(() => {
-      if (Math.max(...racerSpeeds) === playerSpeed) {
+      if (topSpeed === playerSpeed) {
         notify("You won the race! 🏆", "success");
       } else {
-        notify("You lost the race. Pick a speedier Pokémon!", "warn");
+        notify("You lost the race. Draw a new lineup and try again!", "warn");
       }
-      setPlayerPoke([]);
-      setCpus([{}, {}, {}, {}]);
       setAni(false);
     }, RACE_DURATION_MS);
   }
@@ -74,35 +74,36 @@ function Race({ dataArr, favorites, user }) {
       <section className="game-header">
         <h1 className="game-title">Race Track</h1>
         <p className="game-subtitle">
-          Five Pokémon, one straightaway — the highest Speed stat takes it. Choose your racer,
-          spin up four rivals, and go.
+          One click draws you and four rivals; the highest Speed stat takes the straightaway.
         </p>
       </section>
 
-      <PickerControls
-        dataArr={dataArr}
-        favorites={favorites}
-        user={user}
-        disabled={ani}
-        onPick={(poke) => setPlayerPoke([poke])}
-        extraButtons={[
-          { id: "opponents", label: "Generate Opponents", onClick: generateOpponents },
-        ]}
-        action={{ id: "race", label: ani ? "Racing…" : "Race!", onClick: startRace }}
-      />
+      <div className="game-controls">
+        <button id="opponents" className="btn btn-dark" onClick={generateRacers} disabled={ani}>
+          New Lineup
+        </button>
+        <button id="race" className="btn btn-primary" onClick={startRace} disabled={ani}>
+          {ani ? "Racing…" : "Race!"}
+        </button>
+      </div>
 
-      {playerPoke[0]?.name && (
+      {racers[0]?.name && (
         <div className="picked-banner">
-          Your racer: <strong>{formatName(playerPoke[0].name)}</strong>
-          <TypeBadge type={playerPoke[0].type_one} size="sm" />
-          <TypeBadge type={playerPoke[0].type_two} size="sm" />
+          Your racer: <strong>{formatName(racers[0].name)}</strong>
+          <TypeBadge type={racers[0].type_one} size="sm" />
+          <TypeBadge type={racers[0].type_two} size="sm" />
         </div>
       )}
 
       <div id="track-background" className="track">
-        <Lane label="You" poke={playerPoke[0]} ani={ani} isPlayer />
-        {cpus.map((cpu, i) => (
-          <Lane key={cpu.name || i} label={`CPU ${i + 1}`} poke={cpu} ani={ani} />
+        {Array.from({ length: LANES }, (_, i) => (
+          <Lane
+            key={racers[i] ? `${racers[i].name}-${i}` : i}
+            label={i === 0 ? "You" : `CPU ${i}`}
+            poke={racers[i]}
+            ani={ani}
+            isPlayer={i === 0}
+          />
         ))}
       </div>
     </div>
